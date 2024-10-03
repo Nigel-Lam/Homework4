@@ -1,0 +1,87 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "Pie Chart of world Uranium Deposits",
+  "background": "white",
+  "padding": 5,
+  "width": 600,
+  "height": 400,
+  "title": {"text": "Percentage of World Uranium Deposits", "frame": "group"},
+  "style": "view",
+  "data": [
+    {
+      "name": "source_1",
+      "url": "https://raw.githubusercontent.com/Nigel-Lam/Homework4/refs/heads/main/Dataset/World_uranium_deposit.csv",
+      "format": {"type": "csv", "delimiter": ","},
+      "transform": [
+        {"type": "filter", "expr": "datum.tonnes > Tonnes_Above"},
+        {
+          "type": "stack",
+          "groupby": [],
+          "field": "tonnes",
+          "sort": {"field": ["Country"], "order": ["ascending"]},
+          "as": ["tonnes_start", "tonnes_end"],
+          "offset": "normalize"
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"tonnes\"]) && isFinite(+datum[\"tonnes\"])"
+        }
+      ]
+    }
+  ],
+  "signals": [
+    {
+      "name": "Tonnes_Above",
+      "value": 0,
+      "bind": {
+        "input": "range",
+        "min": 50000,
+        "max": 600000,
+        "step": 1000,
+        "name": "Minimum tonnes"
+      }
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "arc",
+      "style": ["arc"],
+      "from": {"data": "source_1"},
+      "encode": {
+        "update": {
+          "tooltip": {
+            "signal": "{\"Country\": isValid(datum[\"Country\"]) ? datum[\"Country\"] : \"\"+datum[\"Country\"], \"Tonnes (t)\": format(datum[\"tonnes\"], \"\"), \"Percentage\": isValid(datum[\"Percentage\"]) ? datum[\"Percentage\"] : \"\"+datum[\"Percentage\"]}"
+          },
+          "fill": {"scale": "color", "field": "Country"},
+          "description": {
+            "signal": "\"tonnes: \" + (format(datum[\"tonnes_end\"]-datum[\"tonnes_start\"], \".0%\")) + \"; Country: \" + (isValid(datum[\"Country\"]) ? datum[\"Country\"] : \"\"+datum[\"Country\"]) + \"; Tonnes (t): \" + (format(datum[\"tonnes\"], \"\")) + \"; Percentage: \" + (isValid(datum[\"Percentage\"]) ? datum[\"Percentage\"] : \"\"+datum[\"Percentage\"])"
+          },
+          "x": {"signal": "width", "mult": 0.5},
+          "y": {"signal": "height", "mult": 0.5},
+          "outerRadius": {"signal": "min(width,height)/2"},
+          "innerRadius": {"value": 0},
+          "startAngle": {"scale": "theta", "field": "tonnes_end"},
+          "endAngle": {"scale": "theta", "field": "tonnes_start"}
+        }
+      }
+    }
+  ],
+  "scales": [
+    {
+      "name": "theta",
+      "type": "linear",
+      "domain": [0, 1],
+      "range": [0, 6.283185307179586],
+      "zero": true
+    },
+    {
+      "name": "color",
+      "type": "ordinal",
+      "domain": {"data": "source_1", "field": "Country", "sort": true},
+      "range": "category"
+    }
+  ],
+  "legends": [{"fill": "color", "symbolType": "circle", "title": "Country"}],
+  "config": {}
+}
