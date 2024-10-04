@@ -20,13 +20,13 @@
 
 <script type="text/javascript">
   // Embed the first visualization (Total tons of gas used to produce energy in each state)
-  var spec1 = "Homework4/visualization.vg.json";  // Path to the first JSON file
+  var spec1 = "visualization.vg.json";  // Path to the first JSON file
   vegaEmbed('#visualization1', spec1).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
 
   // Embed the second visualization (Percentage of World Uranium Deposits)
-  var spec2 = "Homework4/piechart.vg.json";  // Path to the second JSON file
+  var spec2 = "piechart.vg.json";  // Path to the second JSON file
   vegaEmbed('#visualization2', spec2).then(function(result) {
     // Access the Vega view instance (https://vega.github.io/vega/docs/api/view/) as result.view
   }).catch(console.error);
