@@ -1,0 +1,84 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 800,
+  "height": 400,
+  "title": {
+    "text": "Total tons of gas used to produce energy in each state",
+    "frame": "group"
+  },
+  "style": "view",
+  "data": [
+    {
+      "name": "source_1",
+      "url": "https://raw.githubusercontent.com/Nigel-Lam/FIT3179/main/Homework3/Dataset/States_energy_consumption.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/Nigel-Lam/FIT3179/main/Homework3/Dataset/ne_1.json",
+      "format": {
+        "type": "topojson",
+        "feature": "ne_10m_admin_1_states_provinces"
+      },
+      "transform": [
+        {
+          "type": "lookup",
+          "from": "source_1",
+          "key": "States",
+          "fields": ["properties.name"],
+          "values": ["Gas"]
+        },
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Gas\"]) && isFinite(+datum[\"Gas\"])"
+        }
+      ]
+    }
+  ],
+  "projections": [
+    {
+      "name": "projection",
+      "size": {"signal": "[width, height]"},
+      "fit": {"signal": "data('source_0')"},
+      "type": "mercator"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "shape",
+      "style": ["geoshape"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "Gas"},
+          "ariaRoleDescription": {"value": "geoshape"},
+          "description": {
+            "signal": "\"Tons of Gas: \" + (format(datum[\"Gas\"], \"\"))"
+          }
+        }
+      },
+      "transform": [{"type": "geoshape", "projection": "projection"}]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "Gas"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": false
+    }
+  ],
+  "legends": [
+    {
+      "title": "Tons of Gas",
+      "fill": "color",
+      "gradientLength": {"signal": "clamp(height, 64, 200)"}
+    }
+  ],
+  "config": {}
+}
