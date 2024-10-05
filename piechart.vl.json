@@ -1,0 +1,63 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "description": "Pie Chart of world Uranium Deposits",
+  "width": 600,
+  "height": 400,
+  "title": {
+    "text": "Percentage of World Uranium Deposits",
+    "frame": "group"
+  },
+  "data": {
+    "name": "source_1",
+    "url": "https://raw.githubusercontent.com/Nigel-Lam/Homework4/refs/heads/main/Dataset/World_uranium_deposit.csv",
+    "format": {"type": "csv"}
+  },
+  "mark": {
+    "type": "arc",
+    "tooltip": true
+  },
+  "encoding": {
+    "theta": {
+      "field": "tonnes",
+      "type": "quantitative",
+      "stack": "normalize"
+    },
+    "color": {
+      "field": "Country",
+      "type": "nominal"
+    },
+    "opacity": {
+      "condition": {
+        "param": "country_display",
+        "value": 1
+      },
+      "value": 0.2
+    },
+    "tooltip": [
+      {"title": "Country", "field": "Country", "type": "nominal"},
+      {"title": "Tonnes of Uranium", "field": "tonnes", "type": "quantitative"},
+      {"title": "World Percentage of Uranium Deposit", "field": "Percentage", "type": "nominal"}
+    ]
+  },
+  "params": [
+    {
+      "name": "country_display",
+      "select": {"type": "point", "fields": ["Country"]}, 
+      "bind": "legend"
+    },
+    {
+      "name": "Tonnes_Above",
+      "value": 0,
+      "bind": {
+        "input": "range",
+        "min": 50000,
+        "max": 1684100,
+        "step": 1000,
+        "name": "Minimum tonnes"
+      }
+    }
+  ],
+  "transform": [
+    {"filter": "datum.tonnes > Tonnes_Above"}
+  ]
+}
