@@ -39,7 +39,7 @@
       "bind": {
         "input": "range",
         "min": 50000,
-        "max": 1684100,
+        "max": 800000,
         "step": 1000,
         "name": "Minimum tonnes"
       }
